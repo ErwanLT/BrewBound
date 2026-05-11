@@ -18,6 +18,7 @@ export interface Beer {
   style: string;
   abv: string;
   description: string;
+  imageUrl?: string;
 }
 
 export interface Contribution {

@@ -5,7 +5,8 @@
     "name": "Lanterne",
     "style": "Pale Ale",
     "abv": "5.5%",
-    "description": "Une pale ale légère, florale avec une amertume subtile. Le best-seller de la maison."
+    "description": "Une pale ale légère, florale avec une amertume subtile. Le best-seller de la maison.",
+    "imageUrl": "https://images.unsplash.com/photo-1535958636474-b021ee887b13?q=80&w=150&auto=format&fit=crop"
   },
   {
     "id": "beer-2",
@@ -13,7 +14,8 @@
     "name": "Thé Noir",
     "style": "Black IPA",
     "abv": "6.2%",
-    "description": "IPA sombre infusée au thé noir, mêlant des notes de grillé et d'agrumes."
+    "description": "IPA sombre infusée au thé noir, mêlant des notes de grillé et d'agrumes.",
+    "imageUrl": "https://images.unsplash.com/photo-1555658636-6e4a36218be7?q=80&w=150&auto=format&fit=crop"
   },
   {
     "id": "beer-3",
@@ -21,7 +23,8 @@
     "name": "Champ Libre",
     "style": "Lager",
     "abv": "5.8%",
-    "description": "Une lager non filtrée, fraîche avec des notes de céréales locales."
+    "description": "Une lager non filtrée, fraîche avec des notes de céréales locales.",
+    "imageUrl": "https://galliaparis.com/cdn/shop/files/Eshop_ChampLibre_Portrait.jpg?v=1724163263&width=620"
   },
   {
     "id": "beer-4",
@@ -29,7 +32,8 @@
     "name": "Vière Sylvaner",
     "style": "Vière",
     "abv": "7.5%",
-    "description": "Hybride entre bière et vin, co-fermentée avec du raisin Sylvaner d'Alsace."
+    "description": "Hybride entre bière et vin, co-fermentée avec du raisin Sylvaner d'Alsace.",
+    "imageUrl": "https://galliaparis.com/cdn/shop/products/Eshop_SylvanerStallone_Portrait.jpg?v=1696236720&width=620"
   },
   {
     "id": "beer-5",

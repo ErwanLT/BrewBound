@@ -286,14 +286,21 @@ export default function App() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: idx * 0.1 }}
                             key={beer.id} 
-                            className="p-4 bg-white border border-slate-100 rounded-2xl hover:border-amber-200 transition-all shadow-sm group"
+                            className="p-4 bg-white border border-slate-100 rounded-2xl hover:border-amber-200 transition-all shadow-sm group flex gap-4"
                           >
-                            <div className="flex justify-between items-start mb-1">
-                              <h4 className="font-black text-slate-900 group-hover:text-amber-600 transition-colors">{beer.name}</h4>
-                              <span className="text-[9px] font-mono bg-amber-50 px-2 py-0.5 rounded text-amber-600 border border-amber-100 font-bold">{beer.abv}</span>
+                            {beer.imageUrl && (
+                              <div className="w-16 h-16 shrink-0 rounded-lg overflow-hidden border border-slate-100 bg-slate-50 flex items-center justify-center">
+                                <img src={beer.imageUrl} alt={beer.name} className="w-full h-full object-cover" />
+                              </div>
+                            )}
+                            <div className="flex-1">
+                              <div className="flex justify-between items-start mb-1">
+                                <h4 className="font-black text-slate-900 group-hover:text-amber-600 transition-colors">{beer.name}</h4>
+                                <span className="text-[9px] font-mono bg-amber-50 px-2 py-0.5 rounded text-amber-600 border border-amber-100 font-bold">{beer.abv}</span>
+                              </div>
+                              <div className="text-[10px] uppercase font-bold text-amber-600/80 mb-2">{beer.style}</div>
+                              <p className="text-[11px] text-slate-500 leading-relaxed font-medium">{beer.description}</p>
                             </div>
-                            <div className="text-[10px] uppercase font-bold text-amber-600/80 mb-2">{beer.style}</div>
-                            <p className="text-[11px] text-slate-500 leading-relaxed font-medium">{beer.description}</p>
                           </motion.div>
                         ))}
                         
@@ -451,9 +458,15 @@ export default function App() {
                             </div>
                           </div>
                         </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">ABV (%)</label>
-                          <input name="abv" required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 text-slate-900 placeholder:text-slate-300" placeholder="Ex: 6.5%" />
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">ABV (%)</label>
+                            <input name="abv" required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 text-slate-900 placeholder:text-slate-300" placeholder="Ex: 6.5%" />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">URL de l'image (étiquette)</label>
+                            <input name="imageUrl" type="url" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 text-slate-900 placeholder:text-slate-300" placeholder="https://..." />
+                          </div>
                         </div>
                         <div className="space-y-2">
                           <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Description Gustative</label>
