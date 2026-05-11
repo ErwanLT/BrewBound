@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  --color-beer-gold: #f59e0b; /* amber-500 */
+  --color-app-bg: #F8F9FA;
+  --color-sidebar-bg: #FFFFFF;
+  --color-nav-bg: #FFFFFF;
+}
+
+@layer utilities {
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-slate-200 rounded-full hover:bg-slate-300 transition-colors;
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-app-bg text-slate-900 font-sans antialiased;
+  }
+}

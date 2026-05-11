@@ -1,0 +1,42 @@
+[
+  {
+    "id": "beer-1",
+    "breweryId": "ermitage-bruxelles",
+    "name": "Lanterne",
+    "style": "Pale Ale",
+    "abv": "5.5%",
+    "description": "Une pale ale légère, florale avec une amertume subtile. Le best-seller de la maison."
+  },
+  {
+    "id": "beer-2",
+    "breweryId": "ermitage-bruxelles",
+    "name": "Thé Noir",
+    "style": "Black IPA",
+    "abv": "6.2%",
+    "description": "IPA sombre infusée au thé noir, mêlant des notes de grillé et d'agrumes."
+  },
+  {
+    "id": "beer-3",
+    "breweryId": "gallia-paris",
+    "name": "Champ Libre",
+    "style": "Lager",
+    "abv": "5.8%",
+    "description": "Une lager non filtrée, fraîche avec des notes de céréales locales."
+  },
+  {
+    "id": "beer-4",
+    "breweryId": "gallia-paris",
+    "name": "Vière Sylvaner",
+    "style": "Vière",
+    "abv": "7.5%",
+    "description": "Hybride entre bière et vin, co-fermentée avec du raisin Sylvaner d'Alsace."
+  },
+  {
+    "id": "beer-5",
+    "breweryId": "bendorf-strasbourg",
+    "name": "Cycles Éternels",
+    "style": "Triple",
+    "abv": "8.5%",
+    "description": "Une triple puissante mais digeste, aux notes épicées et fruitées."
+  }
+]

@@ -1,0 +1,10 @@
+{
+  "name": "BrewBound",
+  "description": "Discover local breweries, explore their ratings, opening hours, and AI-generated tasting menus.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "gemini-api"
+  ]
+}
