@@ -34,5 +34,14 @@
     "website": "https://www.brasserie-bendorf.fr",
     "rating": 4.9,
     "description": "Micro-brasserie strasbourgeoise produisant des bières de caractère, non filtrées et non pasteurisées."
+  },
+  {
+    "id": "brewery-1778499531420",
+    "name": "Brasserie Parisis",
+    "city": "Combs-la-Ville",
+    "address": "3 Rue René Dumont, 77380 Combs-la-Ville",
+    "website": "https://brasserie-parisis.com/",
+    "hours": "",
+    "description": "Parisis, des bières d’Ile-de-France parmi les précurseuses de la « révolution craft ». Une brasserie française qui représente fièrement sa région et ses produits.\n\nBrasserie artisanale installée à ses débuts à Epinay-sous-Sénart (91) et qui s’est offert pour ses 10 ans un bâtiment sur mesure à Combs-La-Ville (77). 2500 m² de surface de production et de stockage pour vous offrir des produits toujours plus soignés dans un cadre enchanteur."
   }
 ]
