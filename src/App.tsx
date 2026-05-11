@@ -70,7 +70,9 @@ export default function App() {
 
   const handleSelect = (b: Brewery) => {
     setSelectedBrewery(b);
-    setMapCenter([b.lat, b.lng]);
+    if (b.lat && b.lng) {
+      setMapCenter([b.lat, b.lng]);
+    }
   };
 
   const handleContribute = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -199,7 +201,7 @@ export default function App() {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
               />
               <MapSync center={mapCenter} />
-              {filteredBreweries.map(b => (
+              {filteredBreweries.filter(b => b.lat && b.lng).map(b => (
                 <Marker 
                   key={b.id} 
                   position={[b.lat, b.lng]}
@@ -383,7 +385,34 @@ export default function App() {
                         </div>
                         <div className="space-y-2">
                           <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Adresse complète</label>
-                          <input name="address" required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 text-slate-900 placeholder:text-slate-300" placeholder="28 Rue des brasseurs..." />
+                          <div className="flex gap-2">
+                            <input name="address" id="address-input" required className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 text-slate-900 placeholder:text-slate-300" placeholder="28 Rue des brasseurs..." />
+                            <button 
+                              type="button"
+                              onClick={async () => {
+                                const addr = (document.getElementById('address-input') as HTMLInputElement).value;
+                                if (!addr) return;
+                                try {
+                                  const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(addr)}&format=json&limit=1`);
+                                  const geo = await res.json();
+                                  if (geo && geo[0]) {
+                                    (document.getElementById('lat-input') as HTMLInputElement).value = geo[0].lat;
+                                    (document.getElementById('lng-input') as HTMLInputElement).value = geo[0].lon;
+                                    alert(`Adresse localisée ! (Lat: ${geo[0].lat}, Lng: ${geo[0].lon})`);
+                                  } else {
+                                    alert("Adresse non trouvée.");
+                                  }
+                                } catch (err) {
+                                  console.error(err);
+                                }
+                              }}
+                              className="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all"
+                            >
+                              Localiser
+                            </button>
+                          </div>
+                          <input type="hidden" name="lat" id="lat-input" />
+                          <input type="hidden" name="lng" id="lng-input" />
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-2">

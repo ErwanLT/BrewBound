@@ -31,6 +31,25 @@ async function startServer() {
 
     try {
       const filePath = type === 'brewery' ? 'src/data/breweries.json' : 'src/data/beers.json';
+      
+      // Automatic Geocoding for breweries if lat/lng are missing
+      if (type === 'brewery' && data.address && (!data.lat || !data.lng)) {
+        try {
+          console.log(`Geocoding address: ${data.address}`);
+          const geoResponse = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(data.address as string)}&format=json&limit=1`, {
+            headers: { 'User-Agent': 'BrewBound-App (contact@brewbound.example)' }
+          });
+          const geoData = await geoResponse.json() as any[];
+          if (geoData && geoData.length > 0) {
+            data.lat = parseFloat(geoData[0].lat);
+            data.lng = parseFloat(geoData[0].lon);
+            console.log(`Found coordinates: ${data.lat}, ${data.lng}`);
+          }
+        } catch (geoErr) {
+          console.error("Geocoding failed, proceeding with original data:", geoErr);
+        }
+      }
+
       const branchName = `contribution-${type}-${Date.now()}`;
       const prTitle = `[Collaboration] Nouvelle ${type === 'brewery' ? 'brasserie' : 'bière'} : ${data.name}`;
 
