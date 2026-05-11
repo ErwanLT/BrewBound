@@ -45,5 +45,16 @@
     "website": "https://brasserie-parisis.com/",
     "hours": "",
     "description": "Parisis, des bières d’Ile-de-France parmi les précurseuses de la « révolution craft ». Une brasserie française qui représente fièrement sa région et ses produits.\n\nBrasserie artisanale installée à ses débuts à Epinay-sous-Sénart (91) et qui s’est offert pour ses 10 ans un bâtiment sur mesure à Combs-La-Ville (77). 2500 m² de surface de production et de stockage pour vous offrir des produits toujours plus soignés dans un cadre enchanteur."
+  },
+  {
+    "id": "brewery-1778504972405",
+    "name": "Mélusine",
+    "city": "CHANVERRIE",
+    "address": "ZA La Barboire - Chambretaud 85500 CHANVERRIE",
+    "lat": "46.9170207",
+    "lng": "-0.9494206",
+    "website": "https://www.brasserie-melusine.com/boutique-et-bar/",
+    "hours": "",
+    "description": "Située dans le bocage Vendéen, la brasserie Mélusine est née en 2001, elle fabrique exclusivement des produits artisanaux et 100% naturels. Pour venir nous retrouver, rien de plus simple, nous sommes situés à quelques kilomètres du Parc du Puy du Fou, soit à moins d’une heure de Nantes et à vingt minutes de Cholet."
   }
 ]
