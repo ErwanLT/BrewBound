@@ -53,6 +53,7 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isContributing, setIsContributing] = useState<'brewery' | 'beer' | null>(null);
   const [contributionSuccess, setContributionSuccess] = useState(false);
+  const [prUrl, setPrUrl] = useState<string | null>(null);
   const [mapCenter, setMapCenter] = useState<[number, number]>([46.603354, 1.888334]); // France center
 
   const filteredBreweries = useMemo(() => {
@@ -78,7 +79,7 @@ export default function App() {
     const data = Object.fromEntries(formData.entries());
     
     try {
-      await fetch('/api/contribute', {
+      const response = await fetch('/api/contribute', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -87,11 +88,19 @@ export default function App() {
           timestamp: new Date().toISOString() 
         })
       });
-      setContributionSuccess(true);
-      setTimeout(() => {
-        setIsContributing(null);
-        setContributionSuccess(false);
-      }, 3000);
+      const result = await response.json();
+      
+      if (result.success) {
+        setContributionSuccess(true);
+        if (result.prUrl && result.prUrl !== "https://github.com/user/brewbound/pulls") {
+          setPrUrl(result.prUrl);
+        } else {
+          setTimeout(() => {
+            setIsContributing(null);
+            setContributionSuccess(false);
+          }, 3000);
+        }
+      }
     } catch (err) {
       console.error(err);
     }
@@ -324,19 +333,39 @@ export default function App() {
                   </h2>
                   <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mt-1">Contribution collaborative via GitHub</p>
                 </div>
-                <button onClick={() => setIsContributing(null)} className="bg-white border border-slate-200 p-2 rounded-full hover:bg-slate-50 transition-all text-slate-400 hover:text-slate-900">
+                <button onClick={() => {
+                  setIsContributing(null);
+                  setContributionSuccess(false);
+                  setPrUrl(null);
+                }} className="bg-white border border-slate-200 p-2 rounded-full hover:bg-slate-50 transition-all text-slate-400 hover:text-slate-900">
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
               <div className="p-8">
                 {contributionSuccess ? (
-                  <div className="py-12 text-center space-y-4">
+                  <div className="py-12 text-center space-y-6">
                     <div className="mx-auto w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center">
                       <CheckCircle2 className="w-8 h-8 text-emerald-600" />
                     </div>
-                    <h3 className="text-xl font-black text-slate-900">Action envoyée !</h3>
-                    <p className="text-sm text-slate-500 max-w-xs mx-auto">Votre proposition a été transmise. Une PR GitHub va être générée automatiquement.</p>
+                    <div>
+                      <h3 className="text-xl font-black text-slate-900">Action envoyée !</h3>
+                      <p className="text-sm text-slate-500 max-w-xs mx-auto mt-2">Votre proposition a été transmise avec succès.</p>
+                    </div>
+                    
+                    {prUrl && (
+                      <div className="pt-4">
+                        <a 
+                          href={prUrl} 
+                          target="_blank" 
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-2 bg-slate-900 text-white px-6 py-3 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-slate-800 transition-all shadow-xl shadow-slate-900/20"
+                        >
+                          <Github className="w-4 h-4" />
+                          Voir la Pull Request
+                        </a>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <form onSubmit={handleContribute} className="space-y-6">

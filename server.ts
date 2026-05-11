@@ -2,6 +2,7 @@ import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
 import dotenv from "dotenv";
+import { Octokit } from "@octokit/rest";
 
 dotenv.config();
 
@@ -9,18 +10,100 @@ async function startServer() {
   const app = express();
   const PORT = 3000;
 
+  const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+  const OWNER = process.env.GITHUB_REPO_OWNER;
+  const REPO = process.env.GITHUB_REPO_NAME;
+
+  const octokit = GITHUB_TOKEN ? new Octokit({ auth: GITHUB_TOKEN }) : null;
+
   // API Route for Collaboration
-  app.post("/api/contribute", express.json(), (req, res) => {
-    const contribution = req.body;
-    console.log("New Contribution Received:", contribution);
-    
-    // In a real production app, this could trigger a GitHub Action or use octokit to create a PR.
-    // For now, we simulate the logic.
-    res.json({ 
-      success: true, 
-      message: "Merci ! Votre proposition a été enregistrée. Une Pull Request va être générée sur GitHub.",
-      prUrl: "https://github.com/user/brewbound/pulls" 
-    });
+  app.post("/api/contribute", express.json(), async (req, res) => {
+    const { type, data } = req.body;
+    console.log(`New ${type} Contribution Received:`, data);
+
+    if (!octokit || !OWNER || !REPO) {
+      console.warn("GitHub integration not configured. Check GITHUB_TOKEN, GITHUB_REPO_OWNER, and GITHUB_REPO_NAME.");
+      return res.json({ 
+        success: true, 
+        message: "(Mode Démo) Merci ! Votre proposition a été enregistrée localement (GitHub non configuré).",
+      });
+    }
+
+    try {
+      const filePath = type === 'brewery' ? 'src/data/breweries.json' : 'src/data/beers.json';
+      const branchName = `contribution-${type}-${Date.now()}`;
+      const prTitle = `[Collaboration] Nouvelle ${type === 'brewery' ? 'brasserie' : 'bière'} : ${data.name}`;
+
+      // 1. Get the main branch SHA
+      const { data: mainRef } = await octokit.git.getRef({
+        owner: OWNER,
+        repo: REPO,
+        ref: 'heads/main',
+      });
+
+      // 2. Create a new branch
+      await octokit.git.createRef({
+        owner: OWNER,
+        repo: REPO,
+        ref: `refs/heads/${branchName}`,
+        sha: mainRef.object.sha,
+      });
+
+      // 3. Get the existing file content
+      const { data: fileData } = await octokit.repos.getContent({
+        owner: OWNER,
+        repo: REPO,
+        path: filePath,
+        ref: 'main',
+      });
+
+      if (Array.isArray(fileData) || !('content' in fileData)) {
+        throw new Error("Invalid file content structure from GitHub");
+      }
+
+      const currentContent = JSON.parse(Buffer.from(fileData.content, 'base64').toString());
+      
+      // Generate ID if missing (simple approach)
+      const newItem = {
+        id: data.id || `${type}-${Date.now()}`,
+        ...data
+      };
+
+      const updatedContent = [...currentContent, newItem];
+
+      // 4. Update the file in the new branch
+      await octokit.repos.createOrUpdateFileContents({
+        owner: OWNER,
+        repo: REPO,
+        path: filePath,
+        message: `Add new ${type}: ${data.name}`,
+        content: Buffer.from(JSON.stringify(updatedContent, null, 2)).toString('base64'),
+        branch: branchName,
+        sha: fileData.sha,
+      });
+
+      // 5. Create the Pull Request
+      const { data: pr } = await octokit.pulls.create({
+        owner: OWNER,
+        repo: REPO,
+        title: prTitle,
+        head: branchName,
+        base: 'main',
+        body: `Cette PR a été générée automatiquement depuis l'application BrewBound.\n\n**Type:** ${type}\n**Nom:** ${data.name}\n**Utilisateur:** ${req.headers['x-user-email'] || 'Anonyme'}`,
+      });
+
+      res.json({ 
+        success: true, 
+        message: "Succès ! Votre proposition a généré une Pull Request sur GitHub.",
+        prUrl: pr.html_url 
+      });
+    } catch (err: any) {
+      console.error("Error creating PR:", err);
+      res.status(500).json({ 
+        success: false, 
+        error: "Erreur lors de la création de la Pull Request sur GitHub. Vérifiez vos configurations." 
+      });
+    }
   });
 
   // Vite middleware for development
