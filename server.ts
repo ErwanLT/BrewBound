@@ -8,7 +8,7 @@ dotenv.config();
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const PORT = process.env.PORT || 3000;
 
   const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
   const OWNER = process.env.GITHUB_REPO_OWNER;
