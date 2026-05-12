@@ -1,5 +1,8 @@
 # 🍺 BrewBound
 
+[![CI](https://github.com/ErwanLT/BrewBound/actions/workflows/ci.yml/badge.svg)](https://github.com/ErwanLT/BrewBound/actions/workflows/ci.yml)
+[![Render Status](https://img.shields.io/badge/Render-Live-brightgreen)](https://brewbound.onrender.com)
+
 BrewBound est une application collaborative permettant de cartographier et de découvrir les brasseries artisanales et leurs bières. Conçue comme une plateforme **Open Data**, elle permet à quiconque de contribuer à la base de données via un système de Pull Requests automatisé.
 
 🚀 **Démo en direct :** [https://brewbound.onrender.com](https://brewbound.onrender.com) (Exemple)
