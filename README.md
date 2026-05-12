@@ -5,7 +5,7 @@
 
 BrewBound est une application collaborative permettant de cartographier et de découvrir les brasseries artisanales et leurs bières. Conçue comme une plateforme **Open Data**, elle permet à quiconque de contribuer à la base de données via un système de Pull Requests automatisé.
 
-🚀 **Démo en direct :** [https://brewbound.onrender.com](https://brewbound.onrender.com) (Exemple)
+🚀 **Démo en direct :** [https://brewbound.onrender.com](https://brewbound.onrender.com)
 
 ---
 
