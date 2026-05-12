@@ -20,8 +20,14 @@ export interface Beer {
   imageUrl?: string;
 }
 
-export interface Contribution {
-  type: 'brewery' | 'beer';
-  data: any;
-  timestamp: string;
-}
+export type Contribution =
+  | {
+      type: "brewery";
+      data: Brewery;
+      timestamp: string;
+    }
+  | {
+      type: "beer";
+      data: Beer;
+      timestamp: string;
+    };

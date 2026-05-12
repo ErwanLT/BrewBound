@@ -3,6 +3,9 @@ import path from "path";
 import { createServer as createViteServer } from "vite";
 import dotenv from "dotenv";
 import { Octokit } from "@octokit/rest";
+import rateLimit from "express-rate-limit";
+import { ZodError } from "zod";
+import { parseContribution } from "./src/lib/contributionValidation";
 
 dotenv.config();
 
@@ -16,9 +19,33 @@ async function startServer() {
 
   const octokit = GITHUB_TOKEN ? new Octokit({ auth: GITHUB_TOKEN }) : null;
 
+  const contributionLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 20,
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+
   // API Route for Collaboration
-  app.post("/api/contribute", express.json(), async (req, res) => {
-    const { type, data } = req.body;
+  app.post("/api/contribute", express.json(), contributionLimiter, async (req, res) => {
+    let contribution;
+    try {
+      contribution = parseContribution(req.body);
+    } catch (err) {
+      if (err instanceof ZodError) {
+        return res.status(400).json({
+          success: false,
+          error: "Contribution invalide.",
+          details: err.issues.map((issue) => ({
+            path: issue.path.join("."),
+            message: issue.message,
+          })),
+        });
+      }
+      throw err;
+    }
+
+    const { type, data } = contribution;
     console.log(`New ${type} Contribution Received:`, data);
 
     if (!octokit || !OWNER || !REPO) {
@@ -30,10 +57,10 @@ async function startServer() {
     }
 
     try {
-      const filePath = type === 'brewery' ? 'src/data/breweries.json' : 'src/data/beers.json';
+      const filePath = type === "brewery" ? "src/data/breweries.json" : "src/data/beers.json";
       
       // Automatic Geocoding for breweries if lat/lng are missing
-      if (type === 'brewery' && data.address && (!data.lat || !data.lng)) {
+      if (type === "brewery" && data.address && (!data.lat || !data.lng)) {
         try {
           console.log(`Geocoding address: ${data.address}`);
           const geoResponse = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(data.address as string)}&format=json&limit=1`, {
@@ -79,7 +106,7 @@ async function startServer() {
         throw new Error("Invalid file content structure from GitHub");
       }
 
-      const currentContent = JSON.parse(Buffer.from(fileData.content, 'base64').toString());
+      const currentContent = JSON.parse(Buffer.from(fileData.content, "base64").toString());
       
       const itemId = data.id || `${type}-${Date.now()}`;
       const isUpdate = currentContent.some((item: any) => item.id === itemId);
@@ -106,7 +133,7 @@ async function startServer() {
         repo: REPO,
         path: filePath,
         message: `${isUpdate ? 'Update' : 'Add'} ${type}: ${data.name}`,
-        content: Buffer.from(JSON.stringify(updatedContent, null, 2)).toString('base64'),
+        content: Buffer.from(JSON.stringify(updatedContent, null, 2)).toString("base64"),
         branch: branchName,
         sha: fileData.sha,
       });

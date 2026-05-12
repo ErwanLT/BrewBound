@@ -17,15 +17,17 @@ BrewBound est une application collaborative permettant de cartographier et de d�
 - 🤖 **Automatisation GitHub** : Chaque modification génère automatiquement une Pull Request sur le dépôt.
 - 📝 **Support Markdown** : Les descriptions supportent le texte enrichi (gras, italique, listes) pour une meilleure lisibilité.
 - 🌍 **Géocodage Automatique** : Saisissez une adresse, l'application trouve les coordonnées GPS pour vous.
+- ✅ **Validation des contributions** : Les soumissions sont contrôlées côté serveur avant d'être envoyées vers GitHub.
 
 ---
 
 ## 🛠️ Stack Technique
 
-- **Frontend** : React 19, TypeScript, Tailwind CSS, Lucide React, Framer Motion.
+- **Frontend** : React 19, TypeScript, Tailwind CSS, Lucide React, Motion.
 - **Cartographie** : React-Leaflet / OpenStreetMap.
-- **Backend** : Node.js, Express (API de contribution).
+- **Backend** : Node.js, Express (API de contribution), Zod, express-rate-limit.
 - **Intégration** : Octokit (SDK GitHub) pour la gestion automatisée des fichiers de données.
+- **Qualité** : TypeScript (`tsc`), Vitest et GitHub Actions.
 
 ---
 
@@ -34,7 +36,7 @@ BrewBound est une application collaborative permettant de cartographier et de d�
 BrewBound repose sur un modèle de données décentralisé stocké dans des fichiers JSON (`src/data/`).
 
 1. **Via l'interface** : Utilisez le bouton "Ajouter" ou l'icône "Éditer" sur une brasserie/bière.
-2. **Validation** : Remplissez le formulaire et cliquez sur "Générer la Pull Request".
+2. **Validation** : Remplissez le formulaire et cliquez sur "Générer la Pull Request". Le serveur valide les champs, normalise les données et limite les abus.
 3. **Review** : Un administrateur examine la proposition sur GitHub et la fusionne si elle est correcte.
 
 ---
@@ -70,6 +72,33 @@ BrewBound repose sur un modèle de données décentralisé stocké dans des fich
    npm run dev
    ```
    L'application sera disponible sur `http://localhost:3000`.
+
+---
+
+## ✅ Qualité et CI
+
+Avant d'ouvrir une Pull Request, lancez :
+
+```bash
+npm run lint
+npm test
+npm run build
+```
+
+La CI GitHub exécute les mêmes étapes sur `main` et sur chaque Pull Request :
+- typecheck TypeScript ;
+- tests unitaires Vitest ;
+- build de production Vite.
+
+---
+
+## 📜 Scripts disponibles
+
+- `npm run dev` : lance le serveur Express avec Vite en middleware.
+- `npm run lint` : vérifie les types TypeScript sans générer de fichiers.
+- `npm test` : exécute les tests unitaires.
+- `npm run build` : génère le build de production.
+- `npm start` : lance le serveur en mode production.
 
 ---
 

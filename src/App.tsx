@@ -3,8 +3,10 @@ import ReactMarkdown from 'react-markdown';
 import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { motion, AnimatePresence } from 'motion/react';
-import { Beer as BeerIcon, MapPin, Clock, Info, ChevronRight, X, Navigation, Plus, Github, CheckCircle2, Edit2, Menu, ChevronLeft } from 'lucide-react';
+import { Beer as BeerIcon, MapPin, Clock, ChevronRight, X, Navigation, Plus, Github, CheckCircle2, Edit2, Menu, ChevronLeft } from 'lucide-react';
 import type { Brewery, Beer } from './types';
+import { SORTED_BEER_STYLES } from './constants/beerStyles';
+import { normalizeBeers, normalizeBreweries } from './lib/catalog';
 
 // Data imports
 import breweriesData from './data/breweries.json';
@@ -33,23 +35,9 @@ function MapSync({ center }: { center: [number, number] }) {
   return null;
 }
 
-const BEER_STYLES = [
-  "IPA", "Double IPA", "Triple IPA", "Session IPA", "NEIPA / Hazy IPA", "West Coast IPA", "Black IPA", "White IPA", "Milkshake IPA", "Brut IPA", "Rye IPA", "Cold IPA", "Mountain IPA",
-  "Pale Ale", "American Pale Ale", "Amber Ale", "Red Ale", "Blonde Ale", "Strong Ale",
-  "Lager", "Pilsner", "Helles", "Dunkel", "Schwarzbier", "Kellerbier", "Export",
-  "Stout", "Imperial Stout", "Milk Stout", "Oatmeal Stout", "Pastry Stout", "Coffee Stout", "Irish Dry Stout",
-  "Porter", "Imperial Porter", "Baltic Porter", "Pastry Porter",
-  "Saison", "Farmhouse Ale", "Witbier", "Hefeweizen", "Kristalweizen", "Weizenbock", "Dunkelweizen", "Berliner Weisse",
-  "Gose", "Sour Ale", "Fruited Sour", "Pastry Sour", "Smoothie Sour", "Wild Ale", "Lambic", "Gueuze", "Kriek", "Flanders Red Ale", "Oud Bruin",
-  "Triple (Belge)", "Double / Dubbel", "Quadrupel", "Enkel / Patersbier", "Belgian Golden Strong Ale", "Belgian Dark Strong Ale",
-  "Bock", "Doppelbock", "Eisbock", "Maibock", "Altbier", "Kölsch",
-  "Barleywine", "Old Ale", "Scotch Ale / Wee Heavy", "Irish Red Ale", "English Bitter", "ESB", "Mild Ale",
-  "Smoked Beer / Rauchbier", "Wood-Aged Beer", "Barrel-Aged", "Vière (Hybride Bière/Vin)", "Hard Seltzer", "Non-Alcoholic", "Pastry Ale"
-];
-
 export default function App() {
-  const [breweries] = useState<Brewery[]>(breweriesData as Brewery[]);
-  const [beers] = useState<Beer[]>(beersData as Beer[]);
+  const [breweries] = useState<Brewery[]>(() => normalizeBreweries(breweriesData as Brewery[]));
+  const [beers] = useState<Beer[]>(() => normalizeBeers(beersData as Beer[]));
   const [selectedBrewery, setSelectedBrewery] = useState<Brewery | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isContributing, setIsContributing] = useState<'brewery' | 'beer' | null>(null);
@@ -532,7 +520,7 @@ export default function App() {
                             <div className="relative">
                               <select name="style" defaultValue={(editingItem as Beer)?.style || ""} required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 text-slate-900 appearance-none cursor-pointer">
                                 <option value="" disabled className="bg-white">Choisir un style...</option>
-                                {BEER_STYLES.sort().map(style => (
+                                {SORTED_BEER_STYLES.map(style => (
                                   <option key={style} value={style} className="bg-white text-slate-900">{style}</option>
                                 ))}
                               </select>
