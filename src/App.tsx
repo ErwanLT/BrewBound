@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { motion, AnimatePresence } from 'motion/react';
-import { Beer as BeerIcon, MapPin, Clock, Star, Info, ChevronRight, X, Navigation, Plus, Github, CheckCircle2 } from 'lucide-react';
+import { Beer as BeerIcon, MapPin, Clock, Star, Info, ChevronRight, X, Navigation, Plus, Github, CheckCircle2, Edit2 } from 'lucide-react';
 import type { Brewery, Beer } from './types';
 
 // Data imports
@@ -52,6 +53,7 @@ export default function App() {
   const [selectedBrewery, setSelectedBrewery] = useState<Brewery | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isContributing, setIsContributing] = useState<'brewery' | 'beer' | null>(null);
+  const [editingItem, setEditingItem] = useState<Brewery | Beer | null>(null);
   const [contributionSuccess, setContributionSuccess] = useState(false);
   const [prUrl, setPrUrl] = useState<string | null>(null);
   const [mapCenter, setMapCenter] = useState<[number, number]>([46.603354, 1.888334]); // France center
@@ -86,7 +88,11 @@ export default function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           type: isContributing, 
-          data: isContributing === 'beer' ? { ...data, breweryId: selectedBrewery?.id } : data, 
+          data: {
+            ...(editingItem ? { id: editingItem.id } : {}),
+            ...data,
+            ...(isContributing === 'beer' ? { breweryId: selectedBrewery?.id } : {})
+          },
           timestamp: new Date().toISOString() 
         })
       });
@@ -99,6 +105,7 @@ export default function App() {
         } else {
           setTimeout(() => {
             setIsContributing(null);
+            setEditingItem(null);
             setContributionSuccess(false);
           }, 3000);
         }
@@ -231,19 +238,31 @@ export default function App() {
                       </div>
                       <h2 className="text-4xl font-black text-slate-900 tracking-tighter leading-none">{selectedBrewery.name}</h2>
                     </div>
-                    <button 
-                      onClick={() => setSelectedBrewery(null)}
-                      className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400 hover:text-slate-900 border border-transparent hover:border-slate-200"
-                    >
-                      <X className="w-5 h-5" />
-                    </button>
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={() => {
+                          setEditingItem(selectedBrewery);
+                          setIsContributing('brewery');
+                        }}
+                        className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400 hover:text-amber-600 border border-transparent hover:border-slate-200"
+                        title="Modifier la brasserie"
+                      >
+                        <Edit2 className="w-5 h-5" />
+                      </button>
+                      <button 
+                        onClick={() => setSelectedBrewery(null)}
+                        className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400 hover:text-slate-900 border border-transparent hover:border-slate-200"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
                   </div>
 
                   <div className="space-y-10">
                     <section className="space-y-6">
-                      <p className="text-slate-600 text-sm leading-relaxed italic border-l-2 border-amber-500/40 pl-4 py-1">
-                        "{selectedBrewery.description}"
-                      </p>
+                      <div className="text-slate-600 text-sm leading-relaxed italic border-l-2 border-amber-500/40 pl-4 py-1">
+                        <ReactMarkdown>{selectedBrewery.description}</ReactMarkdown>
+                      </div>
                       
                       <div className="grid grid-cols-2 gap-4">
                         <div className="p-4 bg-slate-50 border border-slate-100 rounded-2xl col-span-2">
@@ -295,11 +314,24 @@ export default function App() {
                             )}
                             <div className="flex-1">
                               <div className="flex justify-between items-start mb-1">
-                                <h4 className="font-black text-slate-900 group-hover:text-amber-600 transition-colors">{beer.name}</h4>
+                                <div className="flex items-center gap-2">
+                                  <h4 className="font-black text-slate-900 group-hover:text-amber-600 transition-colors">{beer.name}</h4>
+                                  <button 
+                                    onClick={() => {
+                                      setEditingItem(beer);
+                                      setIsContributing('beer');
+                                    }}
+                                    className="p-1 opacity-0 group-hover:opacity-100 hover:bg-slate-100 rounded text-slate-400 hover:text-amber-600 transition-all"
+                                  >
+                                    <Edit2 className="w-3.5 h-3.5" />
+                                  </button>
+                                </div>
                                 <span className="text-[9px] font-mono bg-amber-50 px-2 py-0.5 rounded text-amber-600 border border-amber-100 font-bold">{beer.abv}</span>
                               </div>
                               <div className="text-[10px] uppercase font-bold text-amber-600/80 mb-2">{beer.style}</div>
-                              <p className="text-[11px] text-slate-500 leading-relaxed font-medium">{beer.description}</p>
+                              <div className="text-[11px] text-slate-500 leading-relaxed font-medium">
+                                <ReactMarkdown>{beer.description}</ReactMarkdown>
+                              </div>
                             </div>
                           </motion.div>
                         ))}
@@ -338,12 +370,18 @@ export default function App() {
               <div className="p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
                 <div>
                   <h2 className="text-2xl font-black text-slate-900 tracking-tighter">
-                    {isContributing === 'brewery' ? 'Ajouter une brasserie' : `Ajouter une bière chez ${selectedBrewery?.name}`}
+                    {editingItem 
+                      ? `Modifier ${isContributing === 'brewery' ? 'la brasserie' : 'la bière'}`
+                      : isContributing === 'brewery' 
+                        ? 'Ajouter une brasserie' 
+                        : `Ajouter une bière chez ${selectedBrewery?.name}`
+                    }
                   </h2>
                   <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mt-1">Contribution collaborative via GitHub</p>
                 </div>
                 <button onClick={() => {
                   setIsContributing(null);
+                  setEditingItem(null);
                   setContributionSuccess(false);
                   setPrUrl(null);
                 }} className="bg-white border border-slate-200 p-2 rounded-full hover:bg-slate-50 transition-all text-slate-400 hover:text-slate-900">
@@ -383,17 +421,17 @@ export default function App() {
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-2">
                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Nom de la brasserie</label>
-                            <input name="name" required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 text-slate-900 placeholder:text-slate-300" placeholder="Ex: Popihn" />
+                            <input name="name" defaultValue={(editingItem as Brewery)?.name} required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 text-slate-900 placeholder:text-slate-300" placeholder="Ex: Popihn" />
                           </div>
                           <div className="space-y-2">
                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Ville</label>
-                            <input name="city" required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 text-slate-900 placeholder:text-slate-300" placeholder="Ex: Sens" />
+                            <input name="city" defaultValue={(editingItem as Brewery)?.city} required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 text-slate-900 placeholder:text-slate-300" placeholder="Ex: Sens" />
                           </div>
                         </div>
                         <div className="space-y-2">
                           <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Adresse complète</label>
                           <div className="flex gap-2">
-                            <input name="address" id="address-input" required className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 text-slate-900 placeholder:text-slate-300" placeholder="28 Rue des brasseurs..." />
+                            <input name="address" id="address-input" defaultValue={(editingItem as Brewery)?.address} required className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 text-slate-900 placeholder:text-slate-300" placeholder="28 Rue des brasseurs..." />
                             <button 
                               type="button"
                               onClick={async () => {
@@ -418,22 +456,25 @@ export default function App() {
                               Localiser
                             </button>
                           </div>
-                          <input type="hidden" name="lat" id="lat-input" />
-                          <input type="hidden" name="lng" id="lng-input" />
+                          <input type="hidden" name="lat" id="lat-input" defaultValue={(editingItem as Brewery)?.lat} />
+                          <input type="hidden" name="lng" id="lng-input" defaultValue={(editingItem as Brewery)?.lng} />
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-2">
                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Site Web</label>
-                            <input name="website" type="url" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 text-slate-900 placeholder:text-slate-300" placeholder="https://..." />
+                            <input name="website" defaultValue={(editingItem as Brewery)?.website} type="url" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 text-slate-900 placeholder:text-slate-300" placeholder="https://..." />
                           </div>
                           <div className="space-y-2">
                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Horaires</label>
-                            <input name="hours" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 text-slate-900 placeholder:text-slate-300" placeholder="Mer-Dim: 14h-22h" />
+                            <input name="hours" defaultValue={(editingItem as Brewery)?.hours} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 text-slate-900 placeholder:text-slate-300" placeholder="Mer-Dim: 14h-22h" />
                           </div>
                         </div>
                         <div className="space-y-2">
-                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Description</label>
-                          <textarea name="description" required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 h-24 resize-none text-slate-900 placeholder:text-slate-300" placeholder="Brève histoire ou spécialité..." />
+                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex justify-between">
+                            Description
+                            <span className="font-mono lowercase normal-case opacity-60">Markdown supporté (**gras**, *italique*)</span>
+                          </label>
+                          <textarea name="description" defaultValue={(editingItem as Brewery)?.description} required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 h-24 resize-none text-slate-900 placeholder:text-slate-300" placeholder="Brève histoire ou spécialité..." />
                         </div>
                       </>
                     ) : (
@@ -441,13 +482,13 @@ export default function App() {
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-2">
                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Nom de la bière</label>
-                            <input name="name" required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 text-slate-900 placeholder:text-slate-300" placeholder="Ex: West Coast IPA" />
+                            <input name="name" defaultValue={(editingItem as Beer)?.name} required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 text-slate-900 placeholder:text-slate-300" placeholder="Ex: West Coast IPA" />
                           </div>
                           <div className="space-y-2">
                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Style</label>
                             <div className="relative">
-                              <select name="style" required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 text-slate-900 appearance-none cursor-pointer">
-                                <option value="" disabled selected className="bg-white">Choisir un style...</option>
+                              <select name="style" defaultValue={(editingItem as Beer)?.style || ""} required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 text-slate-900 appearance-none cursor-pointer">
+                                <option value="" disabled className="bg-white">Choisir un style...</option>
                                 {BEER_STYLES.sort().map(style => (
                                   <option key={style} value={style} className="bg-white text-slate-900">{style}</option>
                                 ))}
@@ -461,16 +502,19 @@ export default function App() {
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-2">
                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">ABV (%)</label>
-                            <input name="abv" required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 text-slate-900 placeholder:text-slate-300" placeholder="Ex: 6.5%" />
+                            <input name="abv" defaultValue={(editingItem as Beer)?.abv} required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 text-slate-900 placeholder:text-slate-300" placeholder="Ex: 6.5%" />
                           </div>
                           <div className="space-y-2">
                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">URL de l'image (étiquette)</label>
-                            <input name="imageUrl" type="url" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 text-slate-900 placeholder:text-slate-300" placeholder="https://..." />
+                            <input name="imageUrl" defaultValue={(editingItem as Beer)?.imageUrl} type="url" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 text-slate-900 placeholder:text-slate-300" placeholder="https://..." />
                           </div>
                         </div>
                         <div className="space-y-2">
-                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Description Gustative</label>
-                          <textarea name="description" required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 h-24 resize-none text-slate-900 placeholder:text-slate-300" placeholder="Notes de dégustation, houblons utilisés..." />
+                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex justify-between">
+                            Description Gustative
+                            <span className="font-mono lowercase normal-case opacity-60">Markdown supporté (**gras**, *italique*)</span>
+                          </label>
+                          <textarea name="description" defaultValue={(editingItem as Beer)?.description} required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 h-24 resize-none text-slate-900 placeholder:text-slate-300" placeholder="Notes de dégustation, houblons utilisés..." />
                         </div>
                       </>
                     )}
@@ -484,7 +528,7 @@ export default function App() {
                     </div>
                     <button type="submit" className="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-black uppercase tracking-[0.2em] rounded-2xl flex items-center justify-center gap-2 transition-all shadow-xl shadow-emerald-500/20 active:scale-95">
                       <Github className="w-5 h-5 text-white" />
-                      Générer la Pull Request
+                      {editingItem ? 'Mettre à jour via Pull Request' : 'Générer la Pull Request'}
                     </button>
                   </form>
                 )}

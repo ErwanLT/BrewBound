@@ -51,7 +51,6 @@ async function startServer() {
       }
 
       const branchName = `contribution-${type}-${Date.now()}`;
-      const prTitle = `[Collaboration] Nouvelle ${type === 'brewery' ? 'brasserie' : 'bière'} : ${data.name}`;
 
       // 1. Get the main branch SHA
       const { data: mainRef } = await octokit.git.getRef({
@@ -82,20 +81,31 @@ async function startServer() {
 
       const currentContent = JSON.parse(Buffer.from(fileData.content, 'base64').toString());
       
-      // Generate ID if missing (simple approach)
-      const newItem = {
-        id: data.id || `${type}-${Date.now()}`,
-        ...data
-      };
+      const itemId = data.id || `${type}-${Date.now()}`;
+      const isUpdate = currentContent.some((item: any) => item.id === itemId);
 
-      const updatedContent = [...currentContent, newItem];
+      let updatedContent;
+      if (isUpdate) {
+        updatedContent = currentContent.map((item: any) => 
+          item.id === itemId ? { ...item, ...data } : item
+        );
+      } else {
+        const newItem = {
+          id: itemId,
+          ...data
+        };
+        updatedContent = [...currentContent, newItem];
+      }
+
+      const actionLabel = isUpdate ? 'Mise à jour' : 'Ajout';
+      const prTitle = `[Collaboration] ${actionLabel} ${type === 'brewery' ? 'brasserie' : 'bière'} : ${data.name}`;
 
       // 4. Update the file in the new branch
       await octokit.repos.createOrUpdateFileContents({
         owner: OWNER,
         repo: REPO,
         path: filePath,
-        message: `Add new ${type}: ${data.name}`,
+        message: `${isUpdate ? 'Update' : 'Add'} ${type}: ${data.name}`,
         content: Buffer.from(JSON.stringify(updatedContent, null, 2)).toString('base64'),
         branch: branchName,
         sha: fileData.sha,
@@ -108,7 +118,7 @@ async function startServer() {
         title: prTitle,
         head: branchName,
         base: 'main',
-        body: `Cette PR a été générée automatiquement depuis l'application BrewBound.\n\n**Type:** ${type}\n**Nom:** ${data.name}\n**Utilisateur:** ${req.headers['x-user-email'] || 'Anonyme'}`,
+        body: `Cette PR a été générée automatiquement depuis l'application BrewBound.\n\n**Action:** ${actionLabel}\n**Type:** ${type}\n**Nom:** ${data.name}\n**Utilisateur:** ${req.headers['x-user-email'] || 'Anonyme'}`,
       });
 
       res.json({ 
