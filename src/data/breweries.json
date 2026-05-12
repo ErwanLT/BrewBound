@@ -53,5 +53,16 @@
     "website": "https://www.brasserie-melusine.com/boutique-et-bar/",
     "hours": "",
     "description": "Située dans le bocage Vendéen, la brasserie Mélusine est née en 2001, elle fabrique exclusivement des produits artisanaux et 100% naturels. Pour venir nous retrouver, rien de plus simple, nous sommes situés à quelques kilomètres du Parc du Puy du Fou, soit à moins d’une heure de Nantes et à vingt minutes de Cholet."
+  },
+  {
+    "id": "brewery-1778602822715",
+    "name": "3ienchs",
+    "address": "2 Rue Vassal, 94100 Saint-Maur-des-Fossés",
+    "city": "Saint-Maur-des-Fossés",
+    "lat": 48.7932875,
+    "lng": 2.4781059,
+    "website": "https://www.3ienchs.fr/",
+    "hours": "",
+    "description": "Chez les 3ienchs on aime la bière, certes, mais aussi le rock, \nla convivialité,  les copains, les chouettes rencontres, \nla rigolade et la bonne pitance.\nAlors quand vous passerez la porte de la Niche \nc'est un petit monde explosif que vous allez découvrir.\n\nVous avez juste envie de boire un coup et de grignoter ? \nLe bar vous attend et vous accueille dans une \nambiance cosy pour découvrir de nouvelles saveurs \nou se faire de nouveaux amis.\n\nEt si vous êtes pressés, vous avez toujours la possibilité \nde faire un rapide passage par notre boutique \npour une bière fraîche à emporter.\n\nAlors n'attendez plus et entrez dans le monde des \n3ienchs de Saint-Maur-des-Fossés."
   }
 ]
