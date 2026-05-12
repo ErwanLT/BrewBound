@@ -7,7 +7,6 @@ export interface Brewery {
   lng: number;
   hours: string;
   website?: string;
-  rating?: number;
   description?: string;
 }
 

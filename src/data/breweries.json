@@ -8,7 +8,6 @@
     "lng": 4.336,
     "hours": "Mer-Sam: 14:00-22:00, Dim: 14:00-20:00",
     "website": "https://ermitagenanobrasserie.be/",
-    "rating": 4.8,
     "description": "Brasserie artisanale située au cœur de Bruxelles, spécialisée dans les bières équilibrées et créatives."
   },
   {
@@ -20,7 +19,6 @@
     "lng": 2.401,
     "hours": "Lun-Ven: 17:00-00:00, Sam-Dim: 12:00-00:00",
     "website": "https://galliaparis.com/",
-    "rating": 4.6,
     "description": "Pionniers du renouveau de la bière parisienne avec des inspirations 'Vière' (mélange raisin-bière)."
   },
   {
@@ -32,7 +30,6 @@
     "lng": 7.768,
     "hours": "Jeu-Ven: 16:00-19:00",
     "website": "https://www.brasserie-bendorf.fr",
-    "rating": 4.9,
     "description": "Micro-brasserie strasbourgeoise produisant des bières de caractère, non filtrées et non pasteurisées."
   },
   {

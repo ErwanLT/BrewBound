@@ -3,7 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { motion, AnimatePresence } from 'motion/react';
-import { Beer as BeerIcon, MapPin, Clock, Star, Info, ChevronRight, X, Navigation, Plus, Github, CheckCircle2, Edit2 } from 'lucide-react';
+import { Beer as BeerIcon, MapPin, Clock, Info, ChevronRight, X, Navigation, Plus, Github, CheckCircle2, Edit2 } from 'lucide-react';
 import type { Brewery, Beer } from './types';
 
 // Data imports
@@ -172,12 +172,6 @@ export default function App() {
               >
                 <div className="flex justify-between items-start mb-2 gap-2">
                   <h3 className={`font-black tracking-tight text-sm leading-tight pr-2 ${selectedBrewery?.id === b.id ? 'text-slate-900' : 'text-slate-700'}`}>{b.name}</h3>
-                  {b.rating && (
-                    <div className="flex items-center gap-1 bg-white px-2 py-0.5 rounded-full border border-slate-100 shadow-sm shrink-0">
-                      <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
-                      <span className="text-[10px] font-mono font-bold text-slate-700">{b.rating.toFixed(1)}</span>
-                    </div>
-                  )}
                 </div>
                 <div className="text-[11px] text-slate-500 flex items-center gap-1.5 mb-2">
                   <MapPin className="w-3 h-3 text-slate-400" />
