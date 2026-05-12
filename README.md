@@ -1,54 +1,94 @@
-<div align="center">
-  <div style="background-color: #f59e0b; width: 80px; height: 80px; border-radius: 20px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(245,158,11,0.3);">
-    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 11h1a3 3 0 0 1 0 6h-1"/><path d="M9 12v6"/><path d="M13 12v6"/><path d="M14 7.5c-1 0-1.44.5-3 .5s-2-.5-3-.5-1.72.5-2.5.5a.5.5 0 0 1-.5-.5V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1a.5.5 0 0 1-.5.5c-.78 0-1.5-.5-2.5-.5Z"/><path d="M5 8v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8"/></svg>
-  </div>
-  <h1>BrewBound</h1>
-  <p><strong>L'explorateur collaboratif de brasseries artisanales</strong></p>
-</div>
+# 🍺 BrewBound
+
+BrewBound est une application collaborative permettant de cartographier et de découvrir les brasseries artisanales et leurs bières. Conçue comme une plateforme **Open Data**, elle permet à quiconque de contribuer à la base de données via un système de Pull Requests automatisé.
+
+🚀 **Démo en direct :** [https://brewbound.onrender.com](https://brewbound.onrender.com) (Exemple)
 
 ---
 
-## 🍺 À propos de BrewBound
+## ✨ Fonctionnalités
 
-BrewBound est une application interactive permettant de découvrir les brasseries artisanales locales et leurs bières "On Tap". L'application repose sur un modèle de données **Open Data** et collaboratif : chaque utilisateur peut suggérer l'ajout d'une nouvelle brasserie ou d'une nouvelle bière directement depuis l'interface.
-
-### Fonctionnalités clés :
-- **Carte Interactive** : Localisez les meilleures brasseries autour de vous (Leaflet).
-- **Exploration détaillée** : Consultez les horaires, descriptions et adresses.
-- **Menu "On Tap"** : Découvrez les bières actuellement disponibles pour chaque établissement.
-- **Mode Collaboratif** : Proposez des modifications qui génèrent automatiquement des **Pull Requests sur GitHub**.
-
-## 🛠 Installation locale
-
-**Prérequis :** Node.js (v18+)
-
-1.  **Cloner le dépôt**
-2.  **Installer les dépendances** :
-    ```bash
-    npm install
-    ```
-3.  **Configurer les variables d'environnement** :
-    Créez un fichier `.env` à la racine (voir `.env.example`) :
-    ```env
-    GITHUB_TOKEN="votre_token_personnel"
-    GITHUB_REPO_OWNER="votre_nom_utilisateur"
-    GITHUB_REPO_NAME="BrewBound"
-    ```
-4.  **Lancer le serveur de développement** :
-    ```bash
-    npm run dev
-    ```
-    L'application sera accessible sur `http://localhost:3000`.
-
-## 📂 Structure du projet
-
-- `server.ts` : Serveur Express gérant l'intégration GitHub et le middleware Vite.
-- `src/App.tsx` : Interface principale (React + Tailwind + Leaflet).
-- `src/data/` : Fichiers JSON contenant les données des brasseries et des bières.
-
-## 🤝 Contribution
-
-BrewBound est un projet communautaire. Si vous souhaitez améliorer l'interface ou ajouter des fonctionnalités, n'hésitez pas à ouvrir une Pull Request !
+- 🗺️ **Carte Interactive** : Localisez les brasseries sur une carte dynamique (Leaflet).
+- 🍺 **Gestion des Bières** : Consultez la liste des bières "On Tap" pour chaque brasserie.
+- ✍️ **Mode Collaboratif** : Ajoutez ou éditez des brasseries et des bières directement depuis l'interface.
+- 🤖 **Automatisation GitHub** : Chaque modification génère automatiquement une Pull Request sur le dépôt.
+- 📝 **Support Markdown** : Les descriptions supportent le texte enrichi (gras, italique, listes) pour une meilleure lisibilité.
+- 🌍 **Géocodage Automatique** : Saisissez une adresse, l'application trouve les coordonnées GPS pour vous.
 
 ---
-*Développé avec passion pour la craft beer.*
+
+## 🛠️ Stack Technique
+
+- **Frontend** : React 19, TypeScript, Tailwind CSS, Lucide React, Framer Motion.
+- **Cartographie** : React-Leaflet / OpenStreetMap.
+- **Backend** : Node.js, Express (API de contribution).
+- **Intégration** : Octokit (SDK GitHub) pour la gestion automatisée des fichiers de données.
+
+---
+
+## 🤝 Comment contribuer ?
+
+BrewBound repose sur un modèle de données décentralisé stocké dans des fichiers JSON (`src/data/`).
+
+1. **Via l'interface** : Utilisez le bouton "Ajouter" ou l'icône "Éditer" sur une brasserie/bière.
+2. **Validation** : Remplissez le formulaire et cliquez sur "Générer la Pull Request".
+3. **Review** : Un administrateur examine la proposition sur GitHub et la fusionne si elle est correcte.
+
+---
+
+## 💻 Installation locale
+
+### Prérequis
+- Node.js (v18+)
+- Un **GitHub Personal Access Token (classic)** avec les permissions `repo`.
+
+### Étapes
+1. **Cloner le projet**
+   ```bash
+   git clone https://github.com/ErwanLT/BrewBound.git
+   cd BrewBound
+   ```
+
+2. **Installer les dépendances**
+   ```bash
+   npm install
+   ```
+
+3. **Configurer les variables d'environnement**
+   Créez un fichier `.env` à la racine :
+   ```env
+   GITHUB_TOKEN=votre_token_github
+   GITHUB_REPO_OWNER=votre_pseudo_github
+   GITHUB_REPO_NAME=BrewBound
+   ```
+
+4. **Lancer le serveur de développement**
+   ```bash
+   npm run dev
+   ```
+   L'application sera disponible sur `http://localhost:3000`.
+
+---
+
+## 🚀 Déploiement (ex: Render)
+
+L'application est configurée pour être déployée facilement sur **Render** ou Railway.
+
+1. Liez votre dépôt GitHub à Render.
+2. Choisissez le runtime **Node**.
+3. **Build Command** : `npm install && npm run build`
+4. **Start Command** : `npm start`
+5. Ajoutez les variables d'environnement citées plus haut dans le dashboard de Render.
+
+---
+
+## 📁 Structure des données
+
+Les données sont stockées de manière simple pour faciliter l'audit :
+- `src/data/breweries.json` : Liste des brasseries.
+- `src/data/beers.json` : Liste des bières liées par `breweryId`.
+
+---
+
+⚖️ **Licence** : MIT  
+🛠️ **Mainteneur** : [ErwanLT](https://github.com/ErwanLT)
