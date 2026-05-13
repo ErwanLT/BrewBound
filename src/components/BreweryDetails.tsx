@@ -92,7 +92,7 @@ export const BreweryDetails: React.FC<BreweryDetailsProps> = ({
                 <div className="flex items-center justify-between">
                   <h3 className="text-xl font-black text-slate-900 tracking-tight flex items-center gap-2">
                     <BeerIcon className="w-6 h-6 text-amber-500" />
-                    On Tap
+                    À la pression
                   </h3>
                   <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{breweryBeers.length} Bières</span>
                 </div>

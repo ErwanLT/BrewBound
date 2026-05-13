@@ -120,7 +120,7 @@ export const ContributionModal: React.FC<ContributionModalProps> = ({
                         contributionStep === 3 ? 'Premières Bières' :
                         'Prévisualisation & Envoi'
                       }`
-                    : 'Contribution collaborative via GitHub'
+                    : 'Proposition de partage communautaire'
                   }
                 </p>
               </div>
@@ -136,8 +136,8 @@ export const ContributionModal: React.FC<ContributionModalProps> = ({
                     <CheckCircle2 className="w-8 h-8 text-emerald-600" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-black text-slate-900">Action envoyée !</h3>
-                    <p className="text-sm text-slate-500 max-w-xs mx-auto mt-2">Votre proposition a été transmise avec succès.</p>
+                    <h3 className="text-xl font-black text-slate-900">Proposition envoyée !</h3>
+                    <p className="text-sm text-slate-500 max-w-xs mx-auto mt-2">Votre partage est en attente de relecture avant publication.</p>
                   </div>
                   
                   {prUrl && (
@@ -149,7 +149,7 @@ export const ContributionModal: React.FC<ContributionModalProps> = ({
                         className="inline-flex items-center gap-2 bg-slate-900 text-white px-6 py-3 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-slate-800 transition-all shadow-xl shadow-slate-900/20"
                       >
                         <Github className="w-4 h-4" />
-                        Voir la Pull Request
+                        Suivre ma proposition
                       </a>
                     </div>
                   )}
@@ -337,8 +337,8 @@ export const ContributionModal: React.FC<ContributionModalProps> = ({
                           <div className="p-4 bg-amber-50 border border-amber-100 rounded-2xl flex items-center gap-4">
                             <div className="w-10 h-10 bg-white border border-slate-200 rounded-lg flex items-center justify-center shadow-sm"><Github className="w-5 h-5 text-slate-900" /></div>
                             <div className="flex-1">
-                              <p className="text-[11px] font-bold text-slate-700 capitalize tracking-tight">Soumission Finale</p>
-                              <p className="text-[10px] text-slate-400 leading-tight">Votre proposition sera transformée en Pull Request pour être revue et validée.</p>
+                              <p className="text-[11px] font-bold text-slate-700 capitalize tracking-tight">Publication Finale</p>
+                              <p className="text-[10px] text-slate-400 leading-tight">Votre proposition sera relue par l'équipe avant d'être publiée.</p>
                             </div>
                           </div>
 
@@ -350,7 +350,7 @@ export const ContributionModal: React.FC<ContributionModalProps> = ({
                               className="flex-[2] py-4 bg-emerald-500 text-white font-black uppercase tracking-widest rounded-2xl flex items-center justify-center gap-2 hover:bg-emerald-600 transition-all shadow-xl shadow-emerald-500/20 active:scale-95 disabled:opacity-50"
                             >
                               <CheckCircle2 className="w-5 h-5" />
-                              {isSubmitting ? 'Envoi...' : 'Envoyer la proposition'}
+                              {isSubmitting ? 'Envoi...' : 'Proposer la publication'}
                             </button>
                           </div>
                         </motion.div>
@@ -463,10 +463,10 @@ export const ContributionModal: React.FC<ContributionModalProps> = ({
                       )}
                       
                       <div className="p-4 bg-slate-50 border border-slate-100 rounded-2xl flex items-center gap-4">
-                        <div className="w-10 h-10 bg-white border border-slate-200 rounded-lg flex items-center justify-center italic text-xs font-black text-slate-400 shadow-sm">Git</div>
+                        <div className="w-10 h-10 bg-white border border-slate-200 rounded-lg flex items-center justify-center italic text-xs font-black text-slate-400 shadow-sm">Pub</div>
                         <div className="flex-1">
-                          <p className="text-[11px] font-bold text-slate-700 capitalize tracking-tight">Soumission Collaborative</p>
-                          <p className="text-[10px] text-slate-400 leading-tight">Cette action génère une proposition de modification dans nos fichiers de données via GitHub.</p>
+                          <p className="text-[11px] font-bold text-slate-700 capitalize tracking-tight">Publication communautaire</p>
+                          <p className="text-[10px] text-slate-400 leading-tight">Votre proposition sera relue par l'équipe avant d'être publiée sur la carte.</p>
                         </div>
                       </div>
                       <button 
@@ -475,7 +475,7 @@ export const ContributionModal: React.FC<ContributionModalProps> = ({
                         className="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-black uppercase tracking-[0.2em] rounded-2xl flex items-center justify-center gap-2 transition-all shadow-xl shadow-emerald-500/20 active:scale-95 disabled:opacity-50"
                       >
                         <Github className="w-5 h-5 text-white" />
-                        {isSubmitting ? 'Envoi...' : (editingItem ? 'Mettre à jour via Pull Request' : 'Générer la Pull Request')}
+                        {isSubmitting ? 'Envoi...' : (editingItem ? 'Proposer la mise à jour' : 'Envoyer pour relecture')}
                       </button>
                     </form>
                   )}
